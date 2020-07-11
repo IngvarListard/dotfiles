@@ -1,0 +1,5 @@
+imap jk <Esc>
+set timeoutlen=1000
+inoremap <C-k> <C-p>
+let mapleader=","
+set easymotion
