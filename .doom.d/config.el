@@ -122,6 +122,12 @@
   (org-agenda-bulk-mark-regexp "inbox:")
   (personal/bulk-process-entries))
 
+(defun personal/org-agenda-redo ()
+  (interactive)
+  (with-current-buffer "*Org Agenda*"
+    (org-agenda-maybe-redo)
+    (message "[org agenda] refreshed!")))
+
 ;; Org and org's related packages configurations section
 (setq org-journal-dir "~/MEGA/Последний виток/org/roam/"
       org-journal-date-prefix "#+TITLE: "
@@ -168,12 +174,17 @@
   (org-capture nil "i"))
 
 (after! org
+  (defun personal/org-archive-done-tasks ()
+    "Archive all done tasks."
+    (interactive)
+    (org-map-entries 'org-archive-subtree "/DONE" 'file))
   (setq personal/org-agenda-directory "~/MEGA/Последний виток/org/gtd/")
   (setq org-todo-keywords
-      '((sequence "TODO(t!)" "INPROGRESS(i!)" "WAITING(w!)" "|" "CANCELLED(c!)" "DONE(d!)")))
+      '((sequence "TODO(t!)" "NEXT(n!)" "INPROGRESS(i!)" "WAITING(w!)" "|" "CANCELLED(c!)" "DONE(d!)")))
 
   (setq org-todo-keyword-faces
     '(("TODO" . org-warning)
+      ("NEXT" . "#E35DBF")
       ("INPROGRESS" . "#E35DBF")
       ("CANCELED" . (:foreground "white" :background "#4d4d4d" :weight bold))
       ("WAITING" . "pink")))
@@ -199,7 +210,11 @@
           ("w" "Weekly Review" entry (file+olp+datetree ,(concat personal/org-agenda-directory "reviews.org"))
            (file ,(concat personal/org-agenda-directory "templates/weekly_review.org")))
           ("r" "Reading" todo ""
-               ((org-agenda-files '(,(concat personal/org-agenda-directory "reading.org"))))))))
+           ((org-agenda-files '(,(concat personal/org-agenda-directory "reading.org")))))))
+
+  (require 'find-lisp)
+  (setq org-agenda-files
+      (find-lisp-find-files personal/org-agenda-directory "\.org$")))
 
 (map! "<f1>" #'personal/switch-to-agenda)
 (setq org-agenda-block-separator nil
@@ -242,17 +257,18 @@
         "r" #'personal/org-process-inbox
         ;; "r" #'personal/org-agenda-process-inbox-item
         "R" #'org-agenda-refile
-        "c" #'personal/org-inbox-capture)
+        "X" #'personal/org-inbox-capture)
 
 
   (setq org-refile-targets '(("next.org" :level . 0)
                              ("someday.org" :level . 0)
                              ("reading.org" :level . 1)
-                             ("projects.org" :maxlevel . 1))))
+                             ("projects.org" :maxlevel . 1)))
+
+  (add-hook 'org-capture-after-finalize-hook #'personal/org-agenda-redo))
 
 (use-package! org-roam-protocol
   :after org-protocol)
-
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
