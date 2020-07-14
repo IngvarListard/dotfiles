@@ -36,7 +36,8 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'visual)
+;; (setq display-line-numbers-type 'visual)
+(setq display-line-numbers-type nil)
 
 ;; Cursor speed up
 (setq auto-window-vscroll nil)
@@ -134,8 +135,10 @@
       org-journal-file-format "%Y-%m-%d.org"
       org-journal-date-format "%A, %d %B %Y")
 
-(setq org-roam-directory "~/MEGA/Последний виток/org/roam")
-
+(after! org-roam
+  (setq org-roam-directory "~/MEGA/Последний виток/org/roam"
+        org-roam-db-location "~/.roam/org-roam.db"))
+;;
 ;; Russian keyboard layout support
 (use-package! reverse-im
     :config
