@@ -50,7 +50,7 @@
 
 ;; Strike-throw done tasks in org mode
 ;; https://emacs.stackexchange.com/a/10614
-(defun my/modify-org-done-face ()
+(defun personal/modify-org-done-face ()
   (setq org-fontify-done-headline t)
   (set-face-attribute 'org-done nil :strike-through t)
   (set-face-attribute 'org-headline-done nil
@@ -87,6 +87,7 @@
    (org-agenda-set-tags)
    (org-agenda-priority)
    (call-interactively 'personal/my-org-agenda-set-effort)
+   ;; (call-interactively 'org-agenda-schedule)
    (org-agenda-refile nil nil t)))
 
 (defun personal/bulk-process-entries ()
@@ -129,6 +130,23 @@
     (org-agenda-maybe-redo)
     (message "[org agenda] refreshed!")))
 
+(defun personal-org-agenda-skip-all-siblings-but-first ()
+  "Skip all but the first non-done entry."
+  (let (should-skip-entry)
+    (unless (org-current-is-todo)
+      (setq should-skip-entry t))
+    (save-excursion
+      (while (and (not should-skip-entry) (org-goto-sibling t))
+        (when (org-current-is-todo)
+          (setq should-skip-entry t))))
+    (when should-skip-entry
+      (or (outline-next-heading)
+          (goto-char (point-max))))))
+
+(defun org-current-is-todo ()
+  (string= "TODO" (org-get-todo-state)))
+
+
 ;; Org and org's related packages configurations section
 (setq org-journal-dir "~/MEGA/Последний виток/org/roam/"
       org-journal-date-prefix "#+TITLE: "
@@ -169,7 +187,7 @@
   (remove-hook 'org-tab-first-hook #'+org-cycle-only-current-subtree-h))
 
 (eval-after-load "org"
-  (add-hook 'org-add-hook 'my/modify-org-done-face))
+  (add-hook 'org-add-hook 'personal/modify-org-done-face))
 
 (defun personal/org-inbox-capture ()
   (interactive)
@@ -183,7 +201,7 @@
     (org-map-entries 'org-archive-subtree "/DONE" 'file))
   (setq personal/org-agenda-directory "~/MEGA/Последний виток/org/gtd/")
   (setq org-todo-keywords
-      '((sequence "TODO(t!)" "NEXT(n!)" "INPROGRESS(i!)" "WAITING(w!)" "|" "CANCELLED(c!)" "DONE(d!)")))
+      '((sequence "TODO(t!)" "NEXT(n!)" "INPROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")))
 
   (setq org-todo-keyword-faces
     '(("TODO" . org-warning)
@@ -232,7 +250,7 @@
         org-agenda-custom-commands `((" " "Agenda"
                                       ((agenda ""
                                                ((org-agenda-span 'week)
-                                                (org-deadline-warning-days 365)))
+                                                (org-deadline-warning-days 7)))
                                        (todo "TODO"
                                              ((org-agenda-overriding-header "To Refile")
                                               (org-agenda-files '(,(concat personal/org-agenda-directory "inbox.org")))))
@@ -243,6 +261,7 @@
                                              ((org-agenda-overriding-header "In Progress")
                                               (org-agenda-files '(,(concat personal/org-agenda-directory "someday.org")
                                                                   ,(concat personal/org-agenda-directory "projects.org")
+                                                                  ,(concat personal/org-agenda-directory "oneoff.org")
                                                                   ,(concat personal/org-agenda-directory "next.org")))
                                               ))
                                        (todo "TODO"
@@ -251,9 +270,14 @@
                                               ))
                                        (todo "TODO"
                                              ((org-agenda-overriding-header "One-off Tasks")
-                                              (org-agenda-files '(,(concat personal/org-agenda-directory "next.org")))
-                                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled)))))))
+                                              (org-agenda-files '(,(concat personal/org-agenda-directory "next.org")
+                                                                  ,(concat personal/org-agenda-directory "oneoff.org")))
+                                              (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))))
+                                      ("o" "At the office" tags-todo "@office"
+                                        ((org-agenda-overriding-header "Office")
+                                          (org-agenda-skip-function #'personal-org-agenda-skip-all-siblings-but-first))))
         org-agenda-bulk-custom-functions `((,personal/org-agenda-bulk-process-key personal/org-agenda-process-inbox-item)))
+
 
   (map! :map org-agenda-mode-map
         ;; "i" #'org-agenda-clock-in
@@ -264,14 +288,19 @@
 
 
   (setq org-refile-targets '(("next.org" :level . 0)
-                             ("someday.org" :level . 0)
+                             ("oneoff.org" :level . 0)
+                             ("someday.org" :level . 1)
                              ("reading.org" :level . 1)
-                             ("projects.org" :maxlevel . 1)))
+                             ("projects.org" :maxlevel . 2)))
 
   (add-hook 'org-capture-after-finalize-hook #'personal/org-agenda-redo))
 
 (use-package! org-roam-protocol
   :after org-protocol)
+
+(use-package! org-roam-server)
+
+(map! "C-;" #'avy-goto-word-1)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
