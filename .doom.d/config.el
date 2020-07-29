@@ -154,6 +154,7 @@
       org-journal-date-format "%A, %d %B %Y")
 
 (after! org-roam
+  (use-package! org-roam-server)
   (setq org-roam-directory "~/MEGA/Последний виток/org/roam"
         org-roam-db-location "~/.roam/org-roam.db"))
 ;;
@@ -297,8 +298,6 @@
 
 (use-package! org-roam-protocol
   :after org-protocol)
-
-(use-package! org-roam-server)
 
 (map! "C-;" #'avy-goto-word-1)
 
