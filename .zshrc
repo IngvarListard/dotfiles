@@ -1,6 +1,6 @@
 
 # Path to your oh-my-zsh installation.
-export ZSH=/home/harry/.oh-my-zsh
+export ZSH=/home/igar/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -84,10 +84,10 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-PATH=$PATH:/opt/typora/:$HOME/go/bin:$HOME/.emacs.d/bin
+PATH=$PATH:/opt/typora/:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/.local/bin/
 export PATH
 GOBIN=$HOME/go/bin
 export GOBIN
 export GOPRIVATE=git.wildberries.ru/*,wms-sklad.dp.wb.ru/*
 
-source /home/harry/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /home/igar/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
