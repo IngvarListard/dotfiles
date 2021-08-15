@@ -9,7 +9,10 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 (package! reverse-im)
-(package! org-roam-server)
+(package! websocket)
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(package! org-ql)
+(package! helm-org-ql)
 
 
 ;; To install a package directly from a remote git repo, you must specify a

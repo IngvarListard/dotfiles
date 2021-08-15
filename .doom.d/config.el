@@ -153,15 +153,39 @@
       org-journal-file-format "%Y-%m-%d.org"
       org-journal-date-format "%A, %d %B %Y")
 
-(after! org-roam
-  (use-package! org-roam-server)
+
+(after! org-roam2
+  ;;(use-package! org-roam-server)
   (setq org-roam-directory "~/MEGA/Последний виток/org/roam"
         org-roam-db-location "~/.roam/org-roam.db"))
-;;
+
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
 ;; Russian keyboard layout support
 (use-package! reverse-im
     :config
     (reverse-im-activate "russian-computer"))
+
+(use-package! org-ql
+  :quelpa (org-ql :fetcher github :repo "alphapapa/org-ql"
+            :files (:defaults (:exclude "helm-org-ql.el"))))
+
+(use-package! helm-org-ql
+  :quelpa (helm-org-ql :fetcher github :repo "alphapapa/org-ql"
+                       :files ("helm-org-ql.el")))
 
 ;; Backups
 (setq backup-by-copying t      ; don't clobber symlinks
