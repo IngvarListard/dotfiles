@@ -179,13 +179,9 @@
     :config
     (reverse-im-activate "russian-computer"))
 
-(use-package! org-ql
-  :quelpa (org-ql :fetcher github :repo "alphapapa/org-ql"
-            :files (:defaults (:exclude "helm-org-ql.el"))))
+(use-package! org-ql :after org)
 
-(use-package! helm-org-ql
-  :quelpa (helm-org-ql :fetcher github :repo "alphapapa/org-ql"
-                       :files ("helm-org-ql.el")))
+(use-package! helm-org-ql :after org)
 
 ;; Backups
 (setq backup-by-copying t      ; don't clobber symlinks
