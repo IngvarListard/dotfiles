@@ -13,6 +13,11 @@
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (package! org-ql)
 (package! helm-org-ql)
+(package! org-transclusion
+  :recipe (:host github
+           :repo "nobiot/org-transclusion"
+           :branch "main"
+           :files ("*.el")))
 
 
 ;; To install a package directly from a remote git repo, you must specify a

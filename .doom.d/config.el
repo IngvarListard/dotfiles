@@ -37,7 +37,7 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 ;; (setq display-line-numbers-type 'visual)
-(setq display-line-numbers-type nil)
+(setq display-line-numbers-type 'visual)
 
 ;; Cursor speed up
 (setq auto-window-vscroll nil)
@@ -202,6 +202,7 @@
 (define-key evil-visual-state-map "k" 'evil-previous-visual-line)
 
 (setq deft-directory "~/MEGA/Последний виток/org/roam/")
+(setq personal/org-agenda-directory "~/MEGA/Последний виток/org/gtd/")
 
 ;; Cycle blocks view in org mode
 (after! evil-org
@@ -215,12 +216,12 @@
   "Capture a task in agenda mode."
   (org-capture nil "i"))
 
+
 (after! org
   (defun personal/org-archive-done-tasks ()
     "Archive all done tasks."
     (interactive)
     (org-map-entries 'org-archive-subtree "/DONE" 'file))
-  (setq personal/org-agenda-directory "~/MEGA/Последний виток/org/gtd/")
   (setq org-todo-keywords
       '((sequence "TODO(t!)" "NEXT(n!)" "INPROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")))
 
@@ -259,6 +260,17 @@
       (find-lisp-find-files personal/org-agenda-directory "\.org$")))
 
 (map! "<f1>" #'personal/switch-to-agenda)
+(map! :leader :desc "move" "0" #'winum-select-window-0-or-10)
+(map! :leader :desc "move" "1" #'winum-select-window-1)
+(map! :leader :desc "move" "2" #'winum-select-window-2)
+(map! :leader :desc "move" "3" #'winum-select-window-3)
+(map! :leader :desc "move" "4" #'winum-select-window-4)
+(map! :leader :desc "move" "5" #'winum-select-window-5)
+(map! :leader :desc "move" "6" #'winum-select-window-6)
+(map! :leader :desc "move" "7" #'winum-select-window-7)
+(map! :leader :desc "move" "8" #'winum-select-window-8)
+(map! :leader :desc "move" "9" #'winum-select-window-9)
+
 (setq org-agenda-block-separator nil
       org-agenda-start-with-log-mode t)
 (defun personal/switch-to-agenda ()
@@ -320,6 +332,13 @@
   :after org-protocol)
 
 (map! "C-;" #'avy-goto-word-1)
+
+;; treemacs icons https://github.com/doomemacs/themes/issues/264#issuecomment-609451178
+(setq doom-themes-treemacs-theme "doom-colors")
+
+(after! clojure-mode
+  (setq clojure-indent-style 'align-arguments))
+
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
